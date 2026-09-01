@@ -2,12 +2,14 @@ import { useState } from 'react'
 import AddEggForm from './components/AddEggForm'
 import EggTable from './components/EggTable'
 import HenChart from './components/HenChart'
+import Leaderboard from './components/Leaderboard'
 import { useEggs } from './hooks/useEggs'
 import './App.css'
 
 const TABS = [
-    { id: 'table', label: 'Alla  ägg' },
-    { id: 'chart', label: 'Jämför hönor' },
+	{ id: 'table', label: 'Alla  ägg' },
+	{ id: 'chart', label: 'Vikt-graf' },
+	{ id: 'leaderboard', label: 'Jämför hönor' },
 ]
 
 function App() {
@@ -20,42 +22,49 @@ function App() {
 
 	return (
 		<div className="app">
-			<header className="app-header">
-				<h1>Villa Gistviks ägg</h1>
-			</header>
+		<header className="app-header">
+			<h1>Villa Gistviks ägg</h1>
+		</header>
 
-			<nav className="tabs">
-				{TABS.map((t) => (
-				<button
-					key={t.id}
-					type="button"
-					className={`tab ${tab === t.id ? 'active' : ''}`}
-					onClick={() => setTab(t.id)}
-				>
-					{t.label}
-				</button>
-				))}
-			</nav>
+		<nav className="tabs">
+			{TABS.map((t) => (
+			<button
+				key={t.id}
+				type="button"
+				className={`tab ${tab === t.id ? 'active' : ''}`}
+				onClick={() => setTab(t.id)}
+			>
+				{t.label}
+			</button>
+			))}
+		</nav>
 
-			<main>
-				{tab === 'table' && (
-				<section className="panel">
-					<h2>Lägg till ett nytt ägg</h2>
-					<AddEggForm onAdd={addEgg} eggs={eggs} />
-					<h2 style={{ marginTop: 24 }}>Alla Ägg</h2>
-					<EggTable eggs={eggs} onDelete={deleteEgg} />
-				</section>
-				)}
+		<main>
+			{tab === 'table' && (
+			<section className="panel">
+				<h2>Lägg till ett nytt ägg</h2>
+				<AddEggForm onAdd={addEgg} eggs={eggs} />
+				<h2 style={{ marginTop: 24 }}>Alla Ägg</h2>
+				<EggTable eggs={eggs} onDelete={deleteEgg} />
+			</section>
+			)}
 
 			{tab === 'chart' && (
-				<section className="panel">
-					<h2>Äggvikts ändring</h2>
-					<HenChart eggs={eggs} />
-				</section>
-				)}
-			</main>
-		</div>
-	)
+			<section className="panel">
+				<h2>Äggvikts ändring</h2>
+				<HenChart eggs={eggs} />
+			</section>
+			)}
+
+			{tab === 'leaderboard' && (
+			<section className="panel">
+				<h2>Topplistor</h2>
+				<Leaderboard eggs={eggs} />
+			</section>
+			)}
+		</main>
+    </div>
+  )
 }
 
 export default App
