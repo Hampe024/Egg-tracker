@@ -9,13 +9,11 @@ import {
     YAxis,
 } from 'recharts'
 import { formatDate } from '../utils/date'
+import { getEggBreedInfo, henNames, UNKNOWN_HEN } from '../data/hens'
 
 function HenChart({ eggs }) {
-    const hens = useMemo(
-        () => [...new Set(eggs.map((e) => e.hen))].sort((a, b) => a.localeCompare(b)),
-        [eggs]
-    )
-    const [selectedHen, setSelectedHen] = useState('')
+    const hens = useMemo(() => [...henNames(), UNKNOWN_HEN], [])
+    const [selectedHen, setSelectedHen] = useState(hens[0] ?? '')
     const activeHen = hens.includes(selectedHen) ? selectedHen : hens[0] ?? ''
 
     const chartData = useMemo(
@@ -26,10 +24,6 @@ function HenChart({ eggs }) {
             .map((e) => ({ ...e, label: formatDate(e.date) })),
         [eggs, activeHen]
     )
-
-    if (hens.length === 0) {
-        return <p className="hint">Inga höns registrerade.</p>
-    }
 
     return (
         <div>
@@ -49,24 +43,27 @@ function HenChart({ eggs }) {
                 <BarChart data={chartData} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                     <XAxis
-                    dataKey="id"
-                    tickFormatter={(id) => {
-                        const point = chartData.find((d) => d.id === id)
-                        return point ? formatDate(point.date) : ''
-                    }}
-                    tick={{ fontSize: 12 }}
+                        dataKey="id"
+                        tickFormatter={(id) => {
+                            const point = chartData.find((d) => d.id === id)
+                            return point ? formatDate(point.date) : ''
+                        }}
+                        tick={{ fontSize: 12 }}
                     />
                     <YAxis
-                    domain={[20, 80]}
-                    tick={{ fontSize: 12 }}
-                    label={{ value: 'Weight (g)', angle: -90, position: 'insideLeft', style: { fontSize: 12 } }}
+                        domain={[20, 80]}
+                        tick={{ fontSize: 12 }}
+                        label={{ value: 'Weight (g)', angle: -90, position: 'insideLeft', style: { fontSize: 12 } }}
                     />
                     <Tooltip
-                    labelFormatter={(_, payload) => {
-                        const point = payload?.[0]?.payload
-                        return point ? `Ägg från ${formatDate(point.date)}` : ''
-                    }}
-                    formatter={(value, _name, props) => [`${value} g`, props.payload.color]}
+                        labelFormatter={(_, payload) => {
+                            const point = payload?.[0]?.payload
+                            return point ? `Ägg från ${formatDate(point.date)}` : ''
+                        }}
+                        formatter={(value, _name, props) => {
+                            const { breed, color } = getEggBreedInfo(props.payload)
+                            return [`${value} g`, `${breed} (${color})`]
+                        }}
                     />
                     <Bar dataKey="weightGrams" fill="var(--accent)" radius={[4, 4, 0, 0]} />
                 </BarChart>

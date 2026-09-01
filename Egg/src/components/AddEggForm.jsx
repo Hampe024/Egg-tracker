@@ -1,19 +1,21 @@
 import { useMemo, useState } from 'react'
 import { todayISO } from '../utils/date'
+import { HENS, UNKNOWN_HEN } from '../data/hens'
 
 function AddEggForm({ onAdd, eggs }) {
     const [date, setDate] = useState(todayISO())
-    const [color, setColor] = useState('')
     const [weight, setWeight] = useState('')
-    const [hen, setHen] = useState('')
+    const [hen, setHen] = useState(HENS[0]?.name ?? '')
+    const [color, setColor] = useState('')
     const [error, setError] = useState('')
 
-    const henOptions = useMemo(
-        () => [...new Set(eggs.map((e) => e.hen))].sort((a, b) => a.localeCompare(b)),
-        [eggs]
-    )
+    const isUnknown = hen === UNKNOWN_HEN
+
     const colorOptions = useMemo(
-        () => [...new Set(eggs.map((e) => e.color))].sort((a, b) => a.localeCompare(b)),
+        () =>
+        [...new Set(
+            eggs.filter((e) => e.hen === UNKNOWN_HEN && e.color).map((e) => e.color)
+        )].sort((a, b) => a.localeCompare(b)),
         [eggs]
     )
 
@@ -22,59 +24,67 @@ function AddEggForm({ onAdd, eggs }) {
         setError('')
 
         const weightNum = parseFloat(weight)
-        if (!hen.trim()) return setError('Enter which hen laid the egg.')
-        if (!color.trim()) return setError('Enter the egg color.')
+        if (!hen) return setError('Välj en höna.')
+        if (isUnknown && !color.trim()) return setError('Ange äggets färg.')
         if (!weight || Number.isNaN(weightNum) || weightNum <= 0) {
-        return setError('Enter a weight greater than 0.')
+        return setError('Ange en vikt större än 0.')
         }
-        if (!date) return setError('Pick a date.')
+        if (!date) return setError('Välj ett datum.')
 
-        onAdd({ date, color: color.trim(), weightGrams: weightNum, hen: hen.trim() })
-        setColor('')
+        const egg = { date, weightGrams: weightNum, hen }
+        if (isUnknown) egg.color = color.trim()
+
+        onAdd(egg)
         setWeight('')
+        if (isUnknown) setColor('')
     }
 
     return (
         <form className="egg-form" onSubmit={handleSubmit}>
             <div className="field">
                 <label htmlFor="hen">Höna</label>
-                <input
-                id="hen"
-                list="hen-options"
-                autoComplete="off"
-                value={hen}
-                onChange={(e) => setHen(e.target.value)}
-                placeholder="tex Augusta"
-                />
-                <datalist id="hen-options">
-                {henOptions.map((h) => (
-                    <option key={h} value={h} />
-                ))}
-                </datalist>
+                <select id="hen" value={hen} onChange={(e) => setHen(e.target.value)}>
+                    {HENS.map((h) => (
+                        <option key={h.name} value={h.name}>
+                        {h.name} ({h.breed})
+                        </option>
+                    ))}
+                <option value={UNKNOWN_HEN}>{UNKNOWN_HEN}</option>
+                </select>
             </div>
             <div className="field">
                 <label htmlFor="date">Datum</label>
                 <input id="date" type="date" value={date} max={todayISO()} onChange={(e) => setDate(e.target.value)} />
             </div>
-            <div className="field">
+            {isUnknown && (
+                <div className="field">
                 <label htmlFor="color">Färg</label>
                 <input
-                id="color"
-                list="color-options"
-                autoComplete="off"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                placeholder="tex Ljusbrunt"
+                    id="color"
+                    list="color-options"
+                    autoComplete="off"
+                    value={color}
+                    onChange={(e) => setColor(e.target.value)}
+                    placeholder="tex Grönt"
                 />
                 <datalist id="color-options">
-                {colorOptions.map((c) => (
+                    {colorOptions.map((c) => (
                     <option key={c} value={c} />
-                ))}
+                    ))}
                 </datalist>
-            </div>
+                </div>
+            )}
             <div className="field">
                 <label htmlFor="weight">Vikt  (gram)</label>
-                <input id="weight" type="number" step="0.1" min="0" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="tex 38" />
+                <input
+                    id="weight"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder="tex 38"
+                />
             </div>
             {error && <p className="error">{error}</p>}
             <button type="submit" className="primary">Lägg till ägg</button>
