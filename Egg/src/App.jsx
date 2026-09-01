@@ -173,6 +173,7 @@ function HenChart({ eggs }) {
             <option key={hen} value={hen}>{hen}</option>
           ))}
         </select>
+        
       </div>
 
       {chartData.length === 0 ? (
@@ -181,15 +182,25 @@ function HenChart({ eggs }) {
         <ResponsiveContainer width="100%" height={340}>
           <BarChart data={chartData} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+            <XAxis
+              dataKey="id"
+              tickFormatter={(id) => {
+                const point = chartData.find((d) => d.id === id)
+                return point ? formatDate(point.date) : ''
+              }}
+              tick={{ fontSize: 12 }}
+            />
             <YAxis
               domain={[20, 80]}
               tick={{ fontSize: 12 }}
               label={{ value: 'Weight (g)', angle: -90, position: 'insideLeft', style: { fontSize: 12 } }}
             />
             <Tooltip
+              labelFormatter={(_, payload) => {
+                const point = payload?.[0]?.payload
+                return point ? `Ägg från ${formatDate(point.date)}` : ''
+              }}
               formatter={(value, _name, props) => [`${value} g`, props.payload.color]}
-              labelFormatter={(label) => `Egg on ${label}`}
             />
             <Bar dataKey="weightGrams" fill="var(--accent)" radius={[4, 4, 0, 0]} />
           </BarChart>
