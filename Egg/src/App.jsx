@@ -3,7 +3,7 @@ import AddEggForm from './components/AddEggForm'
 import EggTable from './components/EggTable'
 import HenChart from './components/HenChart'
 import Leaderboard from './components/Leaderboard'
-import { getEggBreedInfo } from './data/hens'
+import { getBreedByColor, getEggBreedInfo, UNKNOWN_HEN } from './data/hens'
 import { useEggs } from './hooks/useEggs'
 import './App.css'
 
@@ -13,6 +13,12 @@ const TABS = [
 	{ id: 'leaderboard', label: 'Höns' },
 	{ id: 'breeds', label: 'Raser' },
 ]
+
+function breedGroupKey(egg) {
+  const { breed } = getEggBreedInfo(egg)
+  if (breed !== UNKNOWN_HEN) return breed
+  return getBreedByColor(egg.color) ?? UNKNOWN_HEN
+}
 
 function App() {
 	const { eggs, addEgg, deleteEgg, loading } = useEggs()
@@ -68,7 +74,7 @@ function App() {
 				{tab === 'breeds' && (
 					<section className="panel">
 						<h2>Rastopplista</h2>
-						<Leaderboard eggs={eggs} keyFn={(egg) => getEggBreedInfo(egg).breed} keyLabel="Ras" />
+						<Leaderboard eggs={eggs} keyFn={breedGroupKey} keyLabel="Ras" />
 					</section>
 				)}
 			</main>

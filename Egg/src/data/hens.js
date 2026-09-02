@@ -37,3 +37,11 @@ export function getEggBreedInfo(egg) {
     const breed = getBreed(egg.hen)
     return { breed, color: getBreedColor(breed) }
 }
+
+export function getBreedByColor(color) {
+  const normalized = (color || '').trim().toLowerCase()
+  const match = Object.entries(BREED_COLORS).find(
+    ([, c]) => c.trim().toLowerCase() === normalized
+  )
+  return match ? match[0] : null
+}
