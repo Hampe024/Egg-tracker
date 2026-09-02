@@ -251,3 +251,23 @@ table td:last-child,
 table th:last-child {
   text-align: right;
 }
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+th.sortable:hover {
+  color: var(--text-h);
+}
+
+.sort-arrow {
+  display: inline-block;
+  width: 10px;
+  font-size: 10px;
+  visibility: hidden;
+}
+
+.sort-arrow.active {
+  visibility: visible;
+}
