@@ -91,7 +91,7 @@ function EggTable({ eggs, onDelete }) {
                             Ras{sortIndicator('breed')}
                         </th>
                         <th className="sortable" onClick={() => handleSort('weight')}>
-                            Vikt (gram){sortIndicator('weight')}
+                            Vikt (g){sortIndicator('weight')}
                         </th>
                         </tr>
                     </thead>

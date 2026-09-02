@@ -132,7 +132,7 @@ table {
 th,
 td {
 	text-align: left;
-	padding: 8px 10px;
+	padding: 8px 8px;
 	border-bottom: 1px solid var(--border);
 }
 
@@ -140,6 +140,15 @@ th {
 	opacity: 0.65;
 	font-size: 12px;
 	text-transform: uppercase;
+}
+
+th:first-of-type {
+  width: 3.5rem;
+}
+
+th:last-of-type {
+  width: 4rem;
+  text-align: right;
 }
 
 @media (max-width: 520px) {
