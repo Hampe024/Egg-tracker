@@ -15,22 +15,36 @@ function computeStats(eggs, keyFn) {
 const MEDALS = ['🥇', '🥈', '🥉']
 const PODIUM_ORDER = [1, 0, 2]
 
-function Podium({ ranked, formatValue }) {
+function Podium({ ranked, formatValue, getValue }) {
     const top3 = ranked.slice(0, 3)
+    const goldValue = getValue(top3[0])
+    const bronzeValue = top3[2] ? getValue(top3[2]) : null
+
+    function heightFor(i, entry) {
+        if (i === 0) return 140
+        if (i === 2) return 50
+        if (bronzeValue === null || goldValue === bronzeValue) {
+            return Math.round(140 * (getValue(entry) / (goldValue || 1)))
+        }
+        const ratio = (getValue(entry) - bronzeValue) / (goldValue - bronzeValue)
+        return Math.round(50 + ratio * (140 - 50))
+    }
+
     return (
         <div className="podium">
-        {PODIUM_ORDER.filter((i) => top3[i]).map((i) => {
-            const entry = top3[i]
-            return (
-            <div key={entry.key} className={`podium-place place-${i + 1}`}>
-                <div className="podium-medal">{MEDALS[i]}</div>
-                <div className="podium-block">
-                <span className="podium-hen">{entry.key}</span>
-                <span className="podium-count">{formatValue(entry)}</span>
+            {PODIUM_ORDER.filter((i) => top3[i]).map((i) => {
+                const entry = top3[i]
+                const height = heightFor(i, entry)
+                return (
+                <div key={entry.key} className={`podium-place place-${i + 1}`}>
+                    <div className="podium-medal">{MEDALS[i]}</div>
+                    <div className="podium-block" style={{ height: `${height}px` }}>
+                        <span className="podium-hen">{entry.key}</span>
+                        <span className="podium-count">{formatValue(entry)}</span>
+                    </div>
                 </div>
-            </div>
-            )
-        })}
+                )
+            })}
         </div>
     )
 }
@@ -53,34 +67,34 @@ function Leaderboard({ eggs, keyFn, keyLabel }) {
 
     return (
         <div>
-        <h3 className="podium-title">Flest ägg</h3>
-        <Podium ranked={byCount} formatValue={(e) => `${e.count} ägg`} />
+            <h3 className="podium-title">Flest ägg</h3>
+            <Podium ranked={byCount} formatValue={(e) => `${e.count} ägg`} getValue={(e) => e.count} />
 
-        <h3 className="podium-title">Högst snittvikt</h3>
-        <Podium ranked={byAvgWeight} formatValue={(e) => `${e.avgWeight.toFixed(1)} g snitt`} />
+            <h3 className="podium-title">Högst snittvikt</h3>
+            <Podium ranked={byAvgWeight} formatValue={(e) => `${e.avgWeight.toFixed(1)} g snitt`} getValue={(e) => e.avgWeight} />
 
-        <div className="table-wrap" style={{ marginTop: 24 }}>
-            <table>
-            <thead>
-                <tr>
-                <th>{keyLabel}</th>
-                <th>Antal ägg</th>
-                <th>Totalvikt (gram)</th>
-                <th>Snittvikt (gram)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {byCount.map((entry) => (
-                <tr key={entry.key}>
-                    <td>{entry.key}</td>
-                    <td>{entry.count}</td>
-                    <td>{entry.totalWeight.toFixed(0)}</td>
-                    <td>{entry.avgWeight.toFixed(1)}</td>
-                </tr>
-                ))}
-            </tbody>
-            </table>
-        </div>
+            <div className="table-wrap" style={{ marginTop: 24 }}>
+                <table>
+                <thead>
+                    <tr>
+                    <th>{keyLabel}</th>
+                    <th>Antal ägg</th>
+                    <th>Totalvikt (gram)</th>
+                    <th>Snittvikt (gram)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {byCount.map((entry) => (
+                    <tr key={entry.key}>
+                        <td>{entry.key}</td>
+                        <td>{entry.count}</td>
+                        <td>{entry.totalWeight.toFixed(0)}</td>
+                        <td>{entry.avgWeight.toFixed(1)}</td>
+                    </tr>
+                    ))}
+                </tbody>
+                </table>
+            </div>
         </div>
     )
 }

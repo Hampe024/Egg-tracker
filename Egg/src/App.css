@@ -203,19 +203,16 @@ th:last-of-type {
 }
 
 .place-1 .podium-block {
-	height: 140px;
 	background: rgba(212, 175, 55, 0.15);
 	border-color: #d4af37;
 }
 
 .place-2 .podium-block {
-	height: 105px;
 	background: rgba(176, 176, 176, 0.15);
 	border-color: #b0b0b0;
 }
 
 .place-3 .podium-block {
-	height: 80px;
 	background: rgba(205, 127, 50, 0.15);
 	border-color: #cd7f32;
 }
