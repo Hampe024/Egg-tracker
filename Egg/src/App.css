@@ -47,7 +47,7 @@
 .panel {
 	border: 1px solid var(--border);
 	border-radius: 12px;
-	padding: 20px 24px;
+	padding: 20px 16px;
 	text-align: left;
 }
 
@@ -142,12 +142,20 @@ th {
 	text-transform: uppercase;
 }
 
-th:first-of-type {
-  width: 3.5rem;
+th:nth-of-type(1) {
+  width: 3.8rem;
 }
 
-th:last-of-type {
-  width: 4rem;
+th:nth-of-type(2) {
+	width: 2.5rem;
+}
+
+th:nth-of-type(3) {
+	width: 2.5rem;
+}
+
+th:nth-of-type(4) {
+  width: 4.4rem;
   text-align: right;
 }
 

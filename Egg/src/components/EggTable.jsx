@@ -91,25 +91,25 @@ function EggTable({ eggs, onDelete }) {
                             Ras{sortIndicator('breed')}
                         </th>
                         <th className="sortable" onClick={() => handleSort('weight')}>
-                            Vikt (g){sortIndicator('weight')}
+                            {sortIndicator('weight')}Vikt (g)
                         </th>
                         </tr>
                     </thead>
                     <tbody>
                         {sorted.map((egg) => {
-                        const { breed, color } = getEggBreedInfo(egg)
-                        return (
-                            <tr
-                            key={egg.id}
-                            className={egg.id === selectedId ? 'selected' : ''}
-                            onClick={() => toggleRow(egg.id)}
-                            >
-                            <td>{formatDate(egg.date)}</td>
-                            <td>{egg.hen}</td>
-                            <td>{breed} ({color})</td>
-                            <td>{egg.weightGrams}</td>
-                            </tr>
-                        )
+                            const { breed, color } = getEggBreedInfo(egg)
+                            return (
+                                <tr
+                                key={egg.id}
+                                className={egg.id === selectedId ? 'selected' : ''}
+                                onClick={() => toggleRow(egg.id)}
+                                >
+                                <td>{formatDate(egg.date)}</td>
+                                <td>{egg.hen}</td>
+                                <td>{breed} ({color})</td>
+                                <td>{egg.weightGrams}</td>
+                                </tr>
+                            )
                         })}
                     </tbody>
                 </table>
