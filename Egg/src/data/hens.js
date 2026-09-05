@@ -6,7 +6,7 @@ export const HENS = [
     { name: 'Lille Skutt', breed: 'Silveruddsblå' },
     { name: 'Katten Janson', breed: 'Silveruddsblå' },
     { name: 'Skalman', breed: 'Silveruddsblå' },
-    { name: 'Brummelisa', breed: 'Svart Maran' },
+    { name: 'Brummelisa', breed: 'Koppar Maran' },
 ]
 
 export const UNKNOWN_HEN = 'Okänd'
@@ -14,7 +14,7 @@ export const UNKNOWN_HEN = 'Okänd'
 export const BREED_COLORS = {
     "Hedemora": 'Ljusbrunt',
     "Silveruddsblå": 'Grönt',
-    "Svart Maran": 'Mörkbrunt'
+    "Koppar Maran": 'Mörkbrunt'
 }
 
 export function henNames() {
