@@ -2,15 +2,18 @@ import { useState } from 'react'
 import AddEggForm from './components/AddEggForm'
 import EggTable from './components/EggTable'
 import HenChart from './components/HenChart'
+import EggCountChart from './components/EggCountChart'
 import Leaderboard from './components/Leaderboard'
-import { getBreedByColor, getEggBreedInfo, UNKNOWN_HEN } from './data/hens'
+import { getEggBreedGroup } from './data/hens'
 import { useEggs } from './hooks/useEggs'
+// import { DUMMY_EGGS } from './dummyData' // DUMMY
 import './App.css'
 
 const TABS = [
 	{ id: 'table', label: 'Tabell' },
-	{ id: 'chart', label: 'Graf' },
-	{ id: 'leaderboard', label: 'Höns' },
+	{ id: 'chart', label: 'Vikt' },
+	{ id: 'eggcount', label: 'Ägg' },
+	{ id: 'leaderboard', label: 'Hönor' },
 	{ id: 'breeds', label: 'Raser' },
 ]
 
@@ -21,8 +24,13 @@ function breedGroupKey(egg) {
 }
 
 function App() {
-	const { eggs, addEgg, deleteEgg, loading } = useEggs()
+	const { eggs, addEgg, deleteEgg, loading } = useEggs() // NON DUMMY
+	// const eggs = DUMMY_EGGS // DUMMY
+	// const addEgg = () => {} // DUMMY
+	// const deleteEgg = () => {} // DUMMY
+	// const loading = false // DUMMY
 	const [tab, setTab] = useState('table')
+	console.log(eggs)
 
 	if (loading) {
 		return <div className="app"><p className="hint">Kläcker ägg…</p></div>
@@ -64,17 +72,24 @@ function App() {
 					</section>
 				)}
 
+				{tab === 'eggcount' && (
+					<section className="panel">
+						<h2>Antal ägg per dag</h2>
+						<EggCountChart eggs={eggs} />
+					</section>
+				)}
+
 				{tab === 'leaderboard' && (
 					<section className="panel">
-						<h2>Topplista</h2>
+						<h2>Hönor</h2>
 						<Leaderboard eggs={eggs} keyFn={(egg) => egg.hen} keyLabel="Höna" />
 					</section>
 				)}
 
 				{tab === 'breeds' && (
 					<section className="panel">
-						<h2>Rastopplista</h2>
-						<Leaderboard eggs={eggs} keyFn={breedGroupKey} keyLabel="Ras" />
+						<h2>Raser</h2>
+						<Leaderboard eggs={eggs} keyFn={getEggBreedGroup} keyLabel="Ras" />
 					</section>
 				)}
 			</main>

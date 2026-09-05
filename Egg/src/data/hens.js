@@ -45,3 +45,9 @@ export function getBreedByColor(color) {
   )
   return match ? match[0] : null
 }
+
+export function getEggBreedGroup(egg) {
+  const { breed } = getEggBreedInfo(egg)
+  if (breed !== UNKNOWN_HEN) return breed
+  return getBreedByColor(egg.color) ?? UNKNOWN_HEN
+}
