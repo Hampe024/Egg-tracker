@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 import AddEggForm from './components/AddEggForm'
 import EggTable from './components/EggTable'
 import HenChart from './components/HenChart'
@@ -24,13 +25,24 @@ function breedGroupKey(egg) {
 }
 
 function App() {
-	const { eggs, addEgg, deleteEgg, loading } = useEggs() // NON DUMMY
+	const { eggs, addEgg: addEggToDb, deleteEgg: deleteEggFromDb, loading } = useEggs() // NON DUMMY
 	// const eggs = DUMMY_EGGS // DUMMY
 	// const addEgg = () => {} // DUMMY
 	// const deleteEgg = () => {} // DUMMY
 	// const loading = false // DUMMY
 	const [tab, setTab] = useState('table')
-	console.log(eggs)
+
+	function addEgg(egg) {
+		addEggToDb(egg)
+		toast.success(`Ägg tillagt: ${egg.hen} (${egg.color}), ${egg.weightGrams} g`)
+		console.log('Added egg:', egg)
+	}
+
+	function deleteEgg(id) {
+		deleteEggFromDb(id)
+		toast('Ägg borttaget')
+		console.log('Deleted egg with id:', id)
+	}
 
 	if (loading) {
 		return <div className="app"><p className="hint">Kläcker ägg…</p></div>
@@ -38,6 +50,8 @@ function App() {
 
 	return (
 		<div className="app">
+			<Toaster position="top-center" toastOptions={{ duration: 3000 }} />
+
 			<header className="app-header">
 				<h1>Villa Gistviks ägg</h1>
 			</header>
