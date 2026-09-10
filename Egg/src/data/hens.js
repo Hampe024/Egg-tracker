@@ -39,15 +39,15 @@ export function getEggBreedInfo(egg) {
 }
 
 export function getBreedByColor(color) {
-  const normalized = (color || '').trim().toLowerCase()
-  const match = Object.entries(BREED_COLORS).find(
-    ([, c]) => c.trim().toLowerCase() === normalized
-  )
-  return match ? match[0] : null
+    const normalized = (color || '').trim().toLowerCase()
+    const match = Object.entries(BREED_COLORS).find(
+        ([, c]) => c.trim().toLowerCase() === normalized
+    )
+    return match ? match[0] : null
 }
 
 export function getEggBreedGroup(egg) {
   const { breed } = getEggBreedInfo(egg)
   if (breed !== UNKNOWN_HEN) return breed
-  return getBreedByColor(egg.color) ?? UNKNOWN_HEN
+    return getBreedByColor(egg.color) ?? UNKNOWN_HEN
 }

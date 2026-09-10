@@ -59,7 +59,7 @@ function App() {
 				{tab === 'table' && (
 					<section className="panel">
 						<h2>Lägg till ett nytt ägg</h2>
-						<AddEggForm onAdd={addEgg} eggs={eggs} />
+						<AddEggForm onAdd={addEgg} />
 						<h2 style={{ marginTop: 24 }}>Alla Ägg</h2>
 						<EggTable eggs={eggs} onDelete={deleteEgg} />
 					</section>
