@@ -20,6 +20,34 @@ const RANGES = [
     { id: 'all', label: 'Alla', days: null },
 ]
 
+function eggLabel(egg) {
+    return egg.hen === UNKNOWN_HEN ? `${UNKNOWN_HEN} (${egg.color})` : egg.hen
+}
+
+function CustomTooltip({ active, payload }) {
+    if (!active || !payload?.length) return null
+    const point = payload[0].payload
+    if (!point) return null
+
+    return (
+        <div className="chart-tooltip">
+            <p className="chart-tooltip-title">{formatDate(point.date)}</p>
+            {point.count === 0 ? (
+                <p className="chart-tooltip-empty">Inga ägg</p>
+            ) : (
+                <ul className="chart-tooltip-list">
+                    {point.eggs.map((egg) => (
+                        <li key={egg.id}>
+                            <span>{eggLabel(egg)}</span>
+                            <span>{egg.weightGrams} g</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    )
+}
+
 function EggCountChart({ eggs }) {
     const [range, setRange] = useState('30')
     const [breed, setBreed] = useState('all')
@@ -49,17 +77,22 @@ function EggCountChart({ eggs }) {
             if (cutoffISO > start) start = cutoffISO
         }
 
-        const countByDate = new Map()
+        const eggsByDate = new Map()
         for (const egg of sortedEggs) {
             if (egg.date < start) continue
-            countByDate.set(egg.date, (countByDate.get(egg.date) ?? 0) + 1)
+            if (!eggsByDate.has(egg.date)) eggsByDate.set(egg.date, [])
+            eggsByDate.get(egg.date).push(egg)
         }
 
-        return eachDateBetween(start, today).map((date) => ({
-            date,
-            label: formatDate(date),
-            count: countByDate.get(date) ?? 0,
-        }))
+        return eachDateBetween(start, today).map((date) => {
+            const dayEggs = eggsByDate.get(date) ?? []
+            return {
+                date,
+                label: formatDate(date),
+                count: dayEggs.length,
+                eggs: dayEggs,
+            }
+        })
     }, [sortedEggs, range])
 
     return (
@@ -97,13 +130,7 @@ function EggCountChart({ eggs }) {
                                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                                     <XAxis dataKey="label" tick={{ fontSize: 12 }} interval="preserveStartEnd" />
                                     <YAxis allowDecimals={false} tick={{ fontSize: 12 }} width={28} />
-                                    <Tooltip
-                                        labelFormatter={(_, payload) => {
-                                            const point = payload?.[0]?.payload
-                                            return point ? formatDate(point.date) : ''
-                                        }}
-                                        formatter={(value) => [`${value} ägg`, 'Antal']}
-                                    />
+                                    <Tooltip content={<CustomTooltip />} />
                                     <Bar dataKey="count" fill="var(--accent)" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
