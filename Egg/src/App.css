@@ -74,6 +74,10 @@ tbody tr:nth-child(even) {
 	opacity: 0.65;
 }
 
+.field:nth-of-type(1) {
+	grid-column: 1 / -1;
+}
+
 input,
 select {
 	padding: 8px 10px;
@@ -86,14 +90,18 @@ select {
 
 button.primary {
 	grid-column: 1 / -1;
+	width: 100%;
 	justify-self: start;
 	background: var(--accent);
 	color: #fff;
 	border: none;
-	padding: 9px 16px;
+	padding: 0.8rem 0rem;
+	margin-top: 0.5rem;
 	border-radius: 6px;
+	font-size: 1rem;;
 	font-weight: 600;
 	cursor: pointer;
+	height: fit-content;
 }
 
 .link-button {
