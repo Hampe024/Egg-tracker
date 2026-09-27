@@ -5,7 +5,7 @@ import EggTable from './components/EggTable'
 import HenChart from './components/HenChart'
 import EggCountChart from './components/EggCountChart'
 import Leaderboard from './components/Leaderboard'
-import { getEggBreedGroup } from './data/hens'
+import { getEggBreedGroup, UNKNOWN_HEN  } from './data/hens'
 import { useEggs } from './hooks/useEggs'
 // import { DUMMY_EGGS } from './dummyData' // DUMMY
 import './App.css'
@@ -96,14 +96,22 @@ function App() {
 				{tab === 'leaderboard' && (
 					<section className="panel">
 						<h2>Hönor</h2>
-						<Leaderboard eggs={eggs} keyFn={(egg) => egg.hen} keyLabel="Höna" />
+						<Leaderboard
+							eggs={eggs.filter((e) => e.hen !== UNKNOWN_HEN)}
+							keyFn={(egg) => egg.hen}
+							keyLabel="Höna"
+						/>
 					</section>
 				)}
 
 				{tab === 'breeds' && (
 					<section className="panel">
 						<h2>Raser</h2>
-						<Leaderboard eggs={eggs} keyFn={getEggBreedGroup} keyLabel="Ras" />
+						<Leaderboard
+							eggs={eggs}
+							keyFn={getEggBreedGroup}
+							keyLabel="Ras"
+						/>
 					</section>
 				)}
 			</main>
