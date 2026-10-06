@@ -316,6 +316,7 @@ th.sortable:hover {
   font-size: 13px;
   box-shadow: var(--shadow);
   opacity: 1;
+  max-width: 150px;
 }
 
 .chart-tooltip-title {
@@ -342,4 +343,10 @@ th.sortable:hover {
   display: flex;
   justify-content: space-between;
   gap: 16px;
+}
+
+.chart-tooltip-muted {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: 12px;
 }

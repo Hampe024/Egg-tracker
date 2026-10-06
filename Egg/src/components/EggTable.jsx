@@ -17,8 +17,14 @@ function EggTable({ eggs, onDelete }) {
             return a.egg.hen.localeCompare(b.egg.hen) * dir
             case 'breed':
             return a.breed.localeCompare(b.breed) * dir
-            case 'weight':
-            return (a.egg.weightGrams - b.egg.weightGrams) * dir
+            case 'weight': {
+                const aw = a.egg.weightGrams
+                const bw = b.egg.weightGrams
+                if (aw == null && bw == null) return 0
+                if (aw == null) return 1
+                if (bw == null) return -1
+                return (aw - bw) * dir
+            }
             case 'date':
             default:
             return (a.egg.date < b.egg.date ? -1 : a.egg.date > b.egg.date ? 1 : 0) * dir
@@ -107,7 +113,7 @@ function EggTable({ eggs, onDelete }) {
                                 <td>{formatDate(egg.date)}</td>
                                 <td>{egg.hen}</td>
                                 <td>{breed} ({color})</td>
-                                <td>{egg.weightGrams}</td>
+                                <td>{egg.weightGrams != null ? egg.weightGrams : "-"}</td>
                                 </tr>
                             )
                         })}

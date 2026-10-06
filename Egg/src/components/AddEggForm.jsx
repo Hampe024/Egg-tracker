@@ -15,14 +15,17 @@ function AddEggForm({ onAdd }) {
     function handleSubmit(e) {
         e.preventDefault()
 
-        const weightNum = parseFloat(weight)
         if (!hen) return toast.error('Välj en höna.')
-        if (!weight || Number.isNaN(weightNum) || weightNum <= 0) {
+
+        const hasWeight = weight.trim() !== ''
+        const weightNum = hasWeight ? parseFloat(weight) : undefined
+        if (hasWeight && (Number.isNaN(weightNum) || weightNum <= 0)) {
             return toast.error('Ange en vikt större än 0.')
         }
         if (!date) return toast.error('Välj ett datum.')
 
-        const egg = { date, weightGrams: weightNum }
+        const egg = { date }
+        if (hasWeight) egg.weightGrams = weightNum
         if (isUnknown) {
             const breed = hen.slice(UNKNOWN_PREFIX.length)
             egg.hen = UNKNOWN_HEN
@@ -58,7 +61,7 @@ function AddEggForm({ onAdd }) {
                 <input id="date" type="date" value={date} max={todayISO()} onChange={(e) => setDate(e.target.value)} />
             </div>
             <div className="field">
-                <label htmlFor="weight">Vikt  (gram)</label>
+                <label htmlFor="weight">Vikt (gram, valfritt)</label>
                 <input
                     id="weight"
                     type="number"

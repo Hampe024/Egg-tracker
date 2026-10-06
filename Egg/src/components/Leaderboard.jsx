@@ -4,18 +4,28 @@ function computeStats(eggs, keyFn) {
     const map = new Map()
     for (const egg of eggs) {
         const key = keyFn(egg)
-        if (!map.has(key)) map.set(key, { key, count: 0, totalWeight: 0 })
+        if (!map.has(key)) map.set(key, { key, count: 0, totalWeight: 0, weightedCount: 0 })
         const entry = map.get(key)
         entry.count += 1
-        entry.totalWeight += egg.weightGrams
+        if (egg.weightGrams != null) {
+            entry.totalWeight += egg.weightGrams
+            entry.weightedCount += 1
+        }
     }
-    return [...map.values()].map((e) => ({ ...e, avgWeight: e.totalWeight / e.count }))
+    return [...map.values()].map((e) => ({
+        ...e,
+        avgWeight: e.weightedCount > 0 ? e.totalWeight / e.weightedCount : null,
+    }))
 }
 
 const MEDALS = ['🥇', '🥈', '🥉']
 const PODIUM_ORDER = [1, 0, 2]
 
 function Podium({ ranked, formatValue, getValue }) {
+    if (ranked.length === 0) {
+        return <p className="hint">Ingen data ännu.</p>
+    }
+
     const top3 = ranked.slice(0, 3)
     const goldValue = getValue(top3[0])
     const bronzeValue = top3[2] ? getValue(top3[2]) : null
@@ -57,7 +67,10 @@ function Leaderboard({ eggs, keyFn, keyLabel }) {
         [stats]
     )
     const byAvgWeight = useMemo(
-        () => [...stats].sort((a, b) => b.avgWeight - a.avgWeight || a.key.localeCompare(b.key)),
+        () =>
+            stats
+                .filter((e) => e.avgWeight != null)
+                .sort((a, b) => b.avgWeight - a.avgWeight || a.key.localeCompare(b.key)),
         [stats]
     )
 
@@ -88,8 +101,8 @@ function Leaderboard({ eggs, keyFn, keyLabel }) {
                     <tr key={entry.key}>
                         <td>{entry.key}</td>
                         <td>{entry.count}</td>
-                        <td>{entry.totalWeight.toFixed(0)}</td>
-                        <td>{entry.avgWeight.toFixed(1)}</td>
+                        <td>{entry.weightedCount > 0 ? entry.totalWeight.toFixed(0) : "-"}</td>
+                        <td>{entry.avgWeight != null ? entry.avgWeight.toFixed(1) : "-"}</td>
                     </tr>
                     ))}
                 </tbody>

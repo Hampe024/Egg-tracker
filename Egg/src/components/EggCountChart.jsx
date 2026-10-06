@@ -29,20 +29,32 @@ function CustomTooltip({ active, payload }) {
     const point = payload[0].payload
     if (!point) return null
 
+    const weighted = point.eggs.filter((e) => e.weightGrams != null)
+    const weightless = point.eggs.filter((e) => e.weightGrams == null)
+
     return (
         <div className="chart-tooltip">
             <p className="chart-tooltip-title">{formatDate(point.date)}</p>
             {point.count === 0 ? (
                 <p className="chart-tooltip-empty">Inga ägg</p>
             ) : (
-                <ul className="chart-tooltip-list">
-                    {point.eggs.map((egg) => (
-                        <li key={egg.id}>
-                            <span>{eggLabel(egg)}</span>
-                            <span>{egg.weightGrams} g</span>
-                        </li>
-                    ))}
-                </ul>
+                <>
+                    {weighted.length > 0 && (
+                        <ul className="chart-tooltip-list">
+                            {weighted.map((egg) => (
+                                <li key={egg.id}>
+                                    <span>{eggLabel(egg)}</span>
+                                    <span>{egg.weightGrams} g</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    {weightless.length > 0 && (
+                        <p className="chart-tooltip-muted">
+                            {weightless.map(eggLabel).join(', ')}
+                        </p>
+                    )}
+                </>
             )}
         </div>
     )

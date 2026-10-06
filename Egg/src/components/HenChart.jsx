@@ -49,6 +49,7 @@ const chartData = useMemo(() => {
     const byDate = new Map()
     for (const egg of henEggs) {
         if (egg.date < start) continue
+        if (egg.weightGrams == null) continue
         const entry = byDate.get(egg.date) ?? { sum: 0, count: 0 }
         entry.sum += egg.weightGrams
         entry.count += 1
@@ -109,11 +110,13 @@ return (
                             }}
                             formatter={(value, _name, props) => {
                                 const point = props.payload
-                                if (value === undefined) return ['Inget ägg', '']
+                                if (value === undefined) return ['Inget ägg med vikt', '']
                                 if (point.eggCount === 1) {
-                                const egg = henEggs.find((e) => e.date === point.date)
-                                if (egg) {
-                                    const { breed, color } = getEggBreedInfo(egg)
+                                const weightedEggsForDate = henEggs.filter(
+                                    (e) => e.date === point.date && e.weightGrams != null
+                                )
+                                if (weightedEggsForDate.length === 1) {
+                                    const { breed, color } = getEggBreedInfo(weightedEggsForDate[0])
                                     return [`${value} g`, `${breed} (${color})`]
                                 }
                                 }
