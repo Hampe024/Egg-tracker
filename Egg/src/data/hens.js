@@ -32,6 +32,8 @@ export function getBreedColor(breed) {
 export function getEggBreedInfo(egg) {
     if (egg.hen === UNKNOWN_HEN) {
         const color = (egg.color || '').trim()
+        const breed = getBreedByColor(color)
+        if (breed) return { breed, color }
         return { breed: UNKNOWN_HEN, color: color || UNKNOWN_HEN }
     }
     const breed = getBreed(egg.hen)

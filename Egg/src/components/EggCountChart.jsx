@@ -9,7 +9,7 @@ import {
     YAxis,
 } from 'recharts'
 import { eachDateBetween, formatDate, toISODateLocal, todayISO } from '../utils/date'
-import { BREED_COLORS, getEggBreedGroup, UNKNOWN_HEN } from '../data/hens'
+import { BREED_COLORS, getEggBreedGroup, getBreedByColor, UNKNOWN_HEN } from '../data/hens'
 
 const MIN_BAR_WIDTH = 20
 
@@ -21,47 +21,62 @@ const RANGES = [
 ]
 
 function eggLabel(egg) {
-    return egg.hen === UNKNOWN_HEN ? `${UNKNOWN_HEN} (${egg.color})` : egg.hen
+    const breed = getBreedByColor(egg.color) || UNKNOWN_HEN
+    return egg.hen === UNKNOWN_HEN ? `${breed} (${egg.color})` : egg.hen
+}
+
+function groupedEntries(eggsList) {
+    const counts = new Map()
+    for (const egg of eggsList) {
+        const label = eggLabel(egg)
+        counts.set(label, (counts.get(label) ?? 0) + 1)
+    }
+    return [...counts.entries()].sort((a, b) => b[1] - a[1])
 }
 
 function CustomTooltip({ active, payload }) {
     if (!active || !payload?.length) return null
     const point = payload[0].payload
-    if (!point) return null
+    if (!point || point.count === 0) return null
 
     const weighted = point.eggs.filter((e) => e.weightGrams != null)
-    const weightless = point.eggs.filter((e) => e.weightGrams == null)
+    const weightlessKnown = point.eggs.filter(
+        (e) => e.weightGrams == null && e.hen !== UNKNOWN_HEN
+    )
+    const weightlessUnknown = point.eggs.filter(
+        (e) => e.weightGrams == null && e.hen === UNKNOWN_HEN
+    )
+
+    // console.log('CustomTooltip', { weighted, weightlessKnown, weightlessUnknown })
 
     return (
         <div className="chart-tooltip">
             <p className="chart-tooltip-title">{formatDate(point.date)}</p>
-            {point.count === 0 ? (
-                <p className="chart-tooltip-empty">Inga ägg</p>
-            ) : (
-                <>
-                    {weighted.length > 0 && (
-                        <ul className="chart-tooltip-list">
-                            {weighted.map((egg) => (
-                                <li key={egg.id}>
-                                    <span>{eggLabel(egg)}</span>
-                                    <span>{egg.weightGrams} g</span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                    {weightless.length > 0 && (
-                        <p className="chart-tooltip-muted">
-                            {weightless.map(eggLabel).join(', ')}
-                        </p>
-                    )}
-                </>
-            )}
+            
+            <ul className="chart-tooltip-list">
+                {weighted.map((egg) => (
+                    <li key={egg.id}>
+                        <span>{eggLabel(egg)}</span>
+                        <span>{egg.weightGrams} g</span>
+                    </li>
+                ))}
+                {weightlessKnown.map((egg) => (
+                    <li key={egg.id}>
+                        <span>{eggLabel(egg)}</span>
+                    </li>
+                ))}
+                {groupedEntries(weightlessUnknown).map(([label, count]) => (
+                    <li key={label}>
+                        <span>{count}st {label}</span>
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }
 
 function EggCountChart({ eggs }) {
-    const [range, setRange] = useState('30')
+    const [range, setRange] = useState('7')
     const [breed, setBreed] = useState('all')
 
     const filteredEggs = useMemo(
@@ -117,7 +132,7 @@ function EggCountChart({ eggs }) {
                     {Object.keys(BREED_COLORS).map((b) => (
                         <option key={b} value={b}>{b}</option>
                     ))}
-                    <option value={UNKNOWN_HEN}>{UNKNOWN_HEN}</option>
+                    {/* <option value={UNKNOWN_HEN}>{UNKNOWN_HEN}</option> */}
                 </select>
                 </div>
                 <div className="field" style={{ maxWidth: 160 }}>

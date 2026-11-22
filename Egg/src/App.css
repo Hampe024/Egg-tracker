@@ -316,7 +316,7 @@ th.sortable:hover {
   font-size: 13px;
   box-shadow: var(--shadow);
   opacity: 1;
-  max-width: 150px;
+  max-width: 200px;
 }
 
 .chart-tooltip-title {
@@ -342,11 +342,53 @@ th.sortable:hover {
 .chart-tooltip-list li {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 16px;
+}
+
+.chart-tooltip-list li:nth-child(even) {
+  background: var(--code-bg);
+}
+
+.chart-tooltip-list li span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.chart-tooltip-list li span:last-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .chart-tooltip-muted {
   margin: 4px 0 0;
   color: var(--text);
   font-size: 12px;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.checkbox-field:hover {
+  color: var(--text-h);
+}
+
+.checkbox-field input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }

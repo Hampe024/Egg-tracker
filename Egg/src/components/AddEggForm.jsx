@@ -7,7 +7,6 @@ const UNKNOWN_PREFIX = 'unknown:'
 
 function AddEggForm({ onAdd }) {
     const [date, setDate] = useState(todayISO())
-    const [weight, setWeight] = useState('')
     const [hen, setHen] = useState('')
 
     const isUnknown = hen.startsWith(UNKNOWN_PREFIX)
@@ -15,17 +14,10 @@ function AddEggForm({ onAdd }) {
     function handleSubmit(e) {
         e.preventDefault()
 
-        if (!hen) return toast.error('Välj en höna.')
-
-        const hasWeight = weight.trim() !== ''
-        const weightNum = hasWeight ? parseFloat(weight) : undefined
-        if (hasWeight && (Number.isNaN(weightNum) || weightNum <= 0)) {
-            return toast.error('Ange en vikt större än 0.')
-        }
+        if (!hen) return toast.error('Välj en ras.')
         if (!date) return toast.error('Välj ett datum.')
 
         const egg = { date }
-        if (hasWeight) egg.weightGrams = weightNum
         if (isUnknown) {
             const breed = hen.slice(UNKNOWN_PREFIX.length)
             egg.hen = UNKNOWN_HEN
@@ -35,42 +27,29 @@ function AddEggForm({ onAdd }) {
         }
 
         onAdd(egg)
-        setWeight('')
     }
 
     return (
         <form className="egg-form" onSubmit={handleSubmit}>
             <div className="field">
-                <label htmlFor="hen">Höna</label>
+                <label htmlFor="hen">Ras(färg)</label>
                 <select id="hen" value={hen} onChange={(e) => setHen(e.target.value)}>
-                    <option disabled value="">Välj höna…</option>
+                    <option disabled value="">Välj ras</option>
                     {Object.entries(BREED_COLORS).map(([breed, color]) => (
-                        <option key={breed} value={`${UNKNOWN_PREFIX}${breed}`}>
-                            {UNKNOWN_HEN} {breed} ({color})
+                        <option key={breed} value={`${breed}`}>
+                            {breed} ({color})
                         </option>
                     ))}
-                    {HENS.map((h) => (
+                    {/* {HENS.map((h) => (
                         <option key={h.name} value={h.name}>
                             {h.name} ({h.breed})
                         </option>
-                    ))}
+                    ))} */}
                 </select>
             </div>
             <div className="field">
                 <label htmlFor="date">Datum</label>
                 <input id="date" type="date" value={date} max={todayISO()} onChange={(e) => setDate(e.target.value)} />
-            </div>
-            <div className="field">
-                <label htmlFor="weight">Vikt (gram, valfritt)</label>
-                <input
-                    id="weight"
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    placeholder="tex 38"
-                />
             </div>
             <button type="submit" className="primary">Lägg till ägg</button>
         </form>

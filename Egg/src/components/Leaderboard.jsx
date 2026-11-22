@@ -83,10 +83,10 @@ function Leaderboard({ eggs, keyFn, keyLabel }) {
             <h3 className="podium-title">Flest ägg</h3>
             <Podium ranked={byCount} formatValue={(e) => `${e.count} ägg`} getValue={(e) => e.count} />
 
-            <h3 className="podium-title">Högst snittvikt</h3>
-            <Podium ranked={byAvgWeight} formatValue={(e) => `${e.avgWeight.toFixed(1)} g snitt`} getValue={(e) => e.avgWeight} />
+            {/* <h3 className="podium-title">Högst snittvikt</h3>
+            <Podium ranked={byAvgWeight} formatValue={(e) => `${e.avgWeight.toFixed(1)} g snitt`} getValue={(e) => e.avgWeight} /> */}
 
-            <div className="table-wrap" style={{ marginTop: 24 }}>
+            {/* <div className="table-wrap" style={{ marginTop: 24 }}>
                 <table>
                 <thead>
                     <tr>
@@ -107,7 +107,7 @@ function Leaderboard({ eggs, keyFn, keyLabel }) {
                     ))}
                 </tbody>
                 </table>
-            </div>
+            </div> */}
         </div>
     )
 }

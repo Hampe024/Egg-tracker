@@ -6,6 +6,7 @@ function EggTable({ eggs, onDelete }) {
     const [selectedId, setSelectedId] = useState(null)
     const [sortKey, setSortKey] = useState('date')
     const [sortDir, setSortDir] = useState('desc')
+    const [showLegacyFields, setShowLegacyFields] = useState(false)
 
     const sorted = useMemo(() => {
     const dir = sortDir === 'asc' ? 1 : -1
@@ -83,6 +84,16 @@ function EggTable({ eggs, onDelete }) {
                 </button>
                 </div>
             )}
+            <div className="table-controls">
+                <label className="checkbox-field">
+                    <input
+                        type="checkbox"
+                        checked={showLegacyFields}
+                        onChange={(e) => setShowLegacyFields(e.target.checked)}
+                    />
+                    Visa äldre fält (höna &amp; vikt)
+                </label>
+            </div>
             <div className="table-wrap">
                 <table>
                     <thead>
@@ -90,15 +101,19 @@ function EggTable({ eggs, onDelete }) {
                         <th className="sortable" onClick={() => handleSort('date')}>
                             Datum{sortIndicator('date')}
                         </th>
-                        <th className="sortable" onClick={() => handleSort('hen')}>
-                            Höna{sortIndicator('hen')}
-                        </th>
+                        {showLegacyFields && (
+                            <th className="sortable" onClick={() => handleSort('hen')}>
+                                Höna{sortIndicator('hen')}
+                            </th>
+                        )}
                         <th className="sortable" onClick={() => handleSort('breed')}>
                             Ras{sortIndicator('breed')}
                         </th>
-                        <th className="sortable" onClick={() => handleSort('weight')}>
-                            {sortIndicator('weight')}Vikt (g)
-                        </th>
+                        {showLegacyFields && (
+                            <th className="sortable" onClick={() => handleSort('weight')}>
+                                {sortIndicator('weight')}Vikt (g)
+                            </th>
+                        )}
                         </tr>
                     </thead>
                     <tbody>
@@ -111,9 +126,9 @@ function EggTable({ eggs, onDelete }) {
                                 onClick={() => toggleRow(egg.id)}
                                 >
                                 <td>{formatDate(egg.date)}</td>
-                                <td>{egg.hen}</td>
+                                {showLegacyFields && <td>{egg.hen}</td>}
                                 <td>{breed} ({color})</td>
-                                <td>{egg.weightGrams != null ? egg.weightGrams : "-"}</td>
+                                {showLegacyFields && <td>{egg.weightGrams != null ? egg.weightGrams : "-"}</td>}
                                 </tr>
                             )
                         })}

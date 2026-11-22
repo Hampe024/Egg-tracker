@@ -11,11 +11,11 @@ import { useEggs } from './hooks/useEggs'
 import './App.css'
 
 const TABS = [
-	{ id: 'table', label: 'Tabell' },
-	{ id: 'chart', label: 'Vikt' },
-	{ id: 'eggcount', label: 'Ägg' },
-	{ id: 'leaderboard', label: 'Hönor' },
+	{ id: 'eggcount', label: 'Graf' },
+	{ id: 'add', label: 'Lägg till ägg' },
 	{ id: 'breeds', label: 'Raser' },
+	// { id: 'chart', label: 'Vikt' },
+	// { id: 'leaderboard', label: 'Hönor' },
 ]
 
 function breedGroupKey(egg) {
@@ -30,7 +30,7 @@ function App() {
 	// const addEgg = () => {} // DUMMY
 	// const deleteEgg = () => {} // DUMMY
 	// const loading = false // DUMMY
-	const [tab, setTab] = useState('table')
+	const [tab, setTab] = useState('eggcount')
 
 	function addEgg(egg) {
 		addEggToDb(egg)
@@ -53,7 +53,7 @@ function App() {
 			<Toaster position="top-center" toastOptions={{ duration: 3000 }} />
 
 			<header className="app-header">
-				<h1>Villa Gistviks ägg</h1>
+				<h1>Villa Gistviks Ägg</h1>
 			</header>
 
 			<nav className="tabs">
@@ -70,7 +70,7 @@ function App() {
 			</nav>
 
 			<main>
-				{tab === 'table' && (
+				{tab === 'add' && (
 					<section className="panel">
 						<h2>Lägg till ett nytt ägg</h2>
 						<AddEggForm onAdd={addEgg} />
@@ -79,12 +79,12 @@ function App() {
 					</section>
 				)}
 
-				{tab === 'chart' && (
+				{/* {tab === 'chart' && (
 					<section className="panel">
 						<h2>Äggvikts ändring</h2>
 						<HenChart eggs={eggs} />
 					</section>
-				)}
+				)} */}
 
 				{tab === 'eggcount' && (
 					<section className="panel">
