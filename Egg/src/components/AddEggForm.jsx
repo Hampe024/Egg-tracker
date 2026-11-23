@@ -3,13 +3,9 @@ import toast from 'react-hot-toast'
 import { todayISO } from '../utils/date'
 import { HENS, UNKNOWN_HEN, BREED_COLORS } from '../data/hens'
 
-const UNKNOWN_PREFIX = 'unknown:'
-
 function AddEggForm({ onAdd }) {
     const [date, setDate] = useState(todayISO())
     const [hen, setHen] = useState('')
-
-    const isUnknown = hen.startsWith(UNKNOWN_PREFIX)
 
     function handleSubmit(e) {
         e.preventDefault()
@@ -18,13 +14,9 @@ function AddEggForm({ onAdd }) {
         if (!date) return toast.error('Välj ett datum.')
 
         const egg = { date }
-        if (isUnknown) {
-            const breed = hen.slice(UNKNOWN_PREFIX.length)
-            egg.hen = UNKNOWN_HEN
-            egg.color = BREED_COLORS[breed]
-        } else {
-            egg.hen = hen
-        }
+
+        egg.hen = UNKNOWN_HEN
+        egg.color = BREED_COLORS[hen]
 
         onAdd(egg)
     }
