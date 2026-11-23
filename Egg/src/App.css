@@ -382,10 +382,6 @@ th.sortable:hover {
   cursor: pointer;
 }
 
-.checkbox-field:hover {
-  color: var(--text-h);
-}
-
 .checkbox-field input[type="checkbox"] {
   accent-color: var(--accent);
   width: 16px;
